@@ -9,7 +9,7 @@ public class Selection {
     public Selection(String name) {
         this.name = name;
         this.rank = 0;
-        this.defeated = new ArrayList<Selection>;
+        this.defeated = new ArrayList<Selection>();
     }
 
     public Selection(String name, int rank, ArrayList<Selection> defeated) {

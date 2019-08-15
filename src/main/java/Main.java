@@ -2,40 +2,38 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
     public static void main(String [] args){
         String[] names = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}; //, "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH", "II", "JJ", "KK", "LL", "MM", "NN", "OO", "PP", "QQ", "RR", "SS", "TT", "UU", "VV", "WW", "XX" };
-        Selection[] selections = new Selection[10];
+        ArrayList<Selection> selections = new ArrayList<Selection>();
 
         for(int i=0; i< names.length; i++){
-            selections[i] = new Selection(names[i]);
+            selections.add(new Selection(names[i]));
         }
 
         for(int k=0; k<7; k++) {
-            for (int i = 0; i < selections.length; i += 2) {
-                vote(selections[i], selections[i + 1]);
+            for (int i = 0; i < selections.size(); i += 2) {
+                vote(selections.get(i), selections.get(i + 1));
             }
 
-            Arrays.sort(selections, new SortByRank());
+            Collections.sort(selections, new SortByRank());
 
-            for(int i=0; i<selections.length; i++){
-                System.out.println(selections[i].getName() + " ranked: " + selections[i].getRank() + " defeated: " + selections[i].getDefeated().size());
+            for(int i=0; i<selections.size(); i++){
+                System.out.println(selections.get(i).getName() + " ranked: " + selections.get(i).getRank() + " defeated: " + selections.get(i).getDefeated());
             }
 
-            sort(selections);
+            selections = sort(selections);
 
-            for(int i=0; i<selections.length; i++){
-                System.out.println(selections[i].getName() + " ranked: " + selections[i].getRank() + " defeated: " + selections[i].getDefeated().size());
+            for(int i=0; i<selections.size(); i++){
+                System.out.println(selections.get(i).getName() + " ranked: " + selections.get(i).getRank() + " defeated: " + selections.get(i).getDefeated());
             }
         }
 
-        for(int i=0; i<selections.length; i++){
-            System.out.println(selections[i].getName() + " ranked: " + selections[i].getRank() + " defeated: " + selections[i].getDefeated().size());
+        for(int i=0; i<selections.size(); i++){
+            System.out.println(selections.get(i).getName() + " ranked: " + selections.get(i).getRank() + " defeated: " + selections.get(i).getDefeated().size());
         }
 
 
@@ -50,10 +48,10 @@ public class Main {
 
     public static void vote(Selection A, Selection B){
         int choice;
-        if(Arrays.asList(A.getDefeated()).contains((B))) {
+        if(A.getDefeated().contains((B))) {
             System.out.println((A.getName() + " has already defeated " + B.getName()));
             choice = 1;
-        } else if(Arrays.asList(B.getDefeated()).contains((A))) {
+        } else if(B.getDefeated().contains((A))) {
             System.out.println((B.getName() + " has already defeated " + A.getName()));
             choice = 2;
         } else {
@@ -82,22 +80,23 @@ public class Main {
 
     }
 
-    public static Selection[] sort(Selection[] selections){
+    public static ArrayList<Selection> sort(ArrayList<Selection> selections){
 
-        Selection[] reRanked = new Selection[10];
+        //ArrayList<Selection> reRanked = new ArrayList<Selection>();
 
-        for(int i=0; i<selections.length; i++){
-            for(int j=i+1; j<selections.length; j++){
-                if(Arrays.asList(selections[i].getDefeated()).contains(selections[j])){
-                    reRanked[i] = selections[j];
-                    selections[j] = selections[i];
+        for(int i=0; i<selections.size(); i++){
+            for(int j=i+1; j<selections.size(); j++){
+                if(selections.get(j).getDefeated().contains(selections.get(i))){
+                    System.out.println(i + " " + j);
+                    //reRanked.add(selections.get(j));
+                    Collections.swap(selections, i, j);
                 }
             }
-            reRanked[i]=selections[i];
+            //reRanked.add(selections.get(i));
         }
 
 
-        return reRanked;
+        return selections;
     }
 
 }
