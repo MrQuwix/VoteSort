@@ -3,6 +3,8 @@ import org.json.simple.JSONObject;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 public class Main {
 
@@ -36,6 +38,14 @@ public class Main {
             System.out.println(selections.get(i).getName() + " ranked: " + selections.get(i).getRank() + " defeated: " + selections.get(i).getDefeated().size());
         }
 
+        consumeDefeated(selections);
+        consumeDefeated(selections);
+
+        selections = sort(selections);
+
+        for(int i=0; i<selections.size(); i++){
+            System.out.println(selections.get(i).getName() + " ranked: " + selections.get(i).getRank() + " defeated: " + selections.get(i).sort());
+        }
 
     }
 
@@ -49,21 +59,22 @@ public class Main {
     public static void vote(Selection A, Selection B){
         int choice;
         if(A.getDefeated().contains((B))) {
-            System.out.println((A.getName() + " has already defeated " + B.getName()));
+            //System.out.println((A.getName() + " has already defeated " + B.getName()));
             choice = 1;
         } else if(B.getDefeated().contains((A))) {
-            System.out.println((B.getName() + " has already defeated " + A.getName()));
+            //System.out.println((B.getName() + " has already defeated " + A.getName()));
             choice = 2;
         } else {
             Scanner in = new Scanner(System.in);
             // Display the menu
-            System.out.println("1\t" + A.getName());
-            System.out.println("2\t" + B.getName());
-
-            System.out.println("Please enter your choice:");
+//            System.out.println("1\t" + A.getName());
+//            System.out.println("2\t" + B.getName());
+//
+//            System.out.println("Please enter your choice:");
 
             //Get user's choice
-            choice = in.nextInt();
+            //in.nextInt()
+            choice = 1;
         }
         //Display the title of the chosen module
         switch (choice) {
@@ -97,6 +108,32 @@ public class Main {
 
 
         return selections;
+    }
+
+    public static void consumeDefeated(ArrayList<Selection> list) {
+        for (Selection selected: list){
+
+            Selection temp = new Selection("Temp");
+            temp.setDefeated(selected.getDefeated());
+            if(temp.getDefeated().size() > 0) {
+
+                List<Selection> selectionDefeated = new ArrayList<Selection>(temp.getDefeated());
+                for(Selection defeated: selectionDefeated){
+
+                    if(defeated.getDefeated().size() > 0) {
+                        List<Selection> defeatedDefeated = new ArrayList<Selection>(defeated.getDefeated());
+
+                        for(Selection childDefeated: defeatedDefeated){
+
+                            System.out.println(
+                                    selected + " " + defeated + " " + childDefeated
+                            );
+                            selected.addDefeated(childDefeated);
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
